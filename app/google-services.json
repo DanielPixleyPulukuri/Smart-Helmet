@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "200764904454",
+    "firebase_url": "https://ash14-5bc0c-default-rtdb.firebaseio.com",
+    "project_id": "ash14-5bc0c",
+    "storage_bucket": "ash14-5bc0c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200764904454:android:2f5fb43ee771465d2b1f87",
+        "android_client_info": {
+          "package_name": "com.example.retrieve"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-LYyBd05PMhWxUOsilxRd6vNfguGek-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200764904454:android:eb2f0e0f96d9d28a2b1f87",
+        "android_client_info": {
+          "package_name": "com.example.smarthelmet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-LYyBd05PMhWxUOsilxRd6vNfguGek-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
