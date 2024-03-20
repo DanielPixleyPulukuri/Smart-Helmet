@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Smart Helmet</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ques">Are you \nDriving</string>
+    <string name="hello">Hello!!</string>
+    <string name="pulse_value">Pulse Value</string>
+
 </resources>

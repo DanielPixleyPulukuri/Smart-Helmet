@@ -6,4 +6,5 @@
     <color name="red">#ef7a71</color>
     <color name="brown">#65350f</color>
     <color name="green">#75E479</color>
+    <color name="border_color">#969B97</color>
 </resources>
