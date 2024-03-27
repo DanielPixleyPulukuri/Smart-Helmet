@@ -5,5 +5,6 @@
     <string name="ques">Are you \nDriving</string>
     <string name="hello">Hello!!</string>
     <string name="pulse_value">Pulse Value</string>
+    <string name="get_location">Get Location</string>
 
 </resources>
