@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import android.graphics.Color
+import android.widget.ImageView
 import android.widget.Toast
 import java.util.Arrays
 import com.androidplot.xy.*
@@ -21,6 +22,7 @@ class Driver : AppCompatActivity() {
 
     private lateinit var firebaseRef: DatabaseReference
     private lateinit var plot: XYPlot
+    private lateinit var image: ImageView
 
     private val domainLabels = arrayOf<Number>(93, 96, 97, 98, 99, 100, 101, 102, 103, 104)
     private var series1Number = arrayOf<Number>(95.0, 96.0, 101.0, 102.0, 97.0, 98.0, 99.0, 100.0, 101.0, 97.0)
@@ -33,10 +35,34 @@ class Driver : AppCompatActivity() {
 
         firebaseRef = FirebaseDatabase.getInstance().getReference("sensor_data")
         plot = findViewById(R.id.plot)
+        image = findViewById(R.id.imageView)
 
         setupPlot()
         getData()
+
+        accidentAlert()
     }
+
+    private fun accidentAlert() {
+        firebaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val accelerationX = snapshot.child("acceleration_x").value?.toString()?.toDoubleOrNull() ?: 0.0
+                val accelerationY = snapshot.child("acceleration_y").value?.toString()?.toDoubleOrNull() ?: 0.0
+                Toast.makeText(this@Driver, "acc", Toast.LENGTH_SHORT).show()
+                if (accelerationX > 10.0 && accelerationY > 10.0) {
+                    image.setImageResource(R.drawable.test)
+                }
+                else
+                    image.setImageResource(R.drawable.danger)
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
+            }
+        })
+    }
+
     private fun setupPlot() {
         series1 = SimpleXYSeries(Arrays.asList(*series1Number), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series 1")
         series1Format = LineAndPointFormatter(Color.GREEN, Color.WHITE, null, null)
@@ -59,7 +85,7 @@ class Driver : AppCompatActivity() {
                 val pulseSensorValue = snapshot.child("pulse_sensor_value").value
                 pulseSensorValue?.let {
                     series1Number[9] = it as Number
-                    Toast.makeText(this@Driver, "$it", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@Driver, "$it", Toast.LENGTH_SHORT).show()
                     plotGraph()
                 }
             }

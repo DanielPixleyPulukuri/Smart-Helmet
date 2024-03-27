@@ -19,7 +19,7 @@
 
    <com.androidplot.xy.XYPlot
        android:id="@+id/plot"
-       style="@style/APDefacto.Dark"
+       style="@style/APDefacto.Light"
        android:layout_width="350sp"
        android:layout_height="400sp"
        android:layout_marginTop="10dp"
@@ -32,10 +32,22 @@
 
    <ImageView
        android:id="@+id/imageView"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
+       android:layout_width="1.5in"
+       android:layout_height="1in"
+       android:src="@drawable/test"
        ap:layout_constraintBottom_toBottomOf="parent"
        ap:layout_constraintEnd_toEndOf="parent"
+       ap:layout_constraintHorizontal_bias="1.0"
+       ap:layout_constraintStart_toStartOf="parent"
+       ap:layout_constraintTop_toBottomOf="@+id/plot" />
+
+   <VideoView
+       android:id="@+id/videoView"
+       android:layout_width="100dp"
+       android:layout_height="100dp"
+       android:layout_marginTop="68dp"
+       ap:layout_constraintEnd_toStartOf="@+id/imageView"
+       ap:layout_constraintHorizontal_bias="0.516"
        ap:layout_constraintStart_toStartOf="parent"
        ap:layout_constraintTop_toBottomOf="@+id/plot" />
 

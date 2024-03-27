@@ -7,4 +7,11 @@
     <color name="brown">#65350f</color>
     <color name="green">#75E479</color>
     <color name="border_color">#969B97</color>
+    <color name="colorYesButton">#4CAF50</color> <!-- Green color for "Yes" button -->
+    <color name="colorNoButton">#F44336</color>
+    <color name="colorBackground">#F0F0F0</color> <!-- Light gray background -->
+    <color name="colorText">#333333</color> <!-- Dark gray text color -->
+
+
+
 </resources>
