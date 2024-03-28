@@ -56,12 +56,13 @@ class NonDrivers : AppCompatActivity() {
         setContentView(R.layout.activity_non_drivers)
 
         firebaseRef = FirebaseDatabase.getInstance().getReference("sensor_data")
-        firebaseRefLocation = FirebaseDatabase.getInstance().getReference("location")
+        firebaseRefLocation = FirebaseDatabase.getInstance().getReference("Location")
         plot = findViewById(R.id.plot)
         alert = findViewById(R.id.alertButton)
         normal = findViewById(R.id.normalButton)
         location = findViewById(R.id.getLocation)
         alert.visibility = View.INVISIBLE
+        normal.visibility = View.INVISIBLE
         location.visibility = View.INVISIBLE
 
         setupPlot()
@@ -79,10 +80,12 @@ class NonDrivers : AppCompatActivity() {
                     snapshot.child("acceleration_y").value?.toString()?.toDoubleOrNull() ?: 0.0
 //                Toast.makeText(this@NonDrivers, "XY", Toast.LENGTH_SHORT).show()
                 if (accelerationX <= 2.0 || accelerationY < 2.0) {
+                    alert.clearAnimation()
                     normal.visibility = View.VISIBLE
                     alert.visibility = View.INVISIBLE
                     location.visibility = View.INVISIBLE
-                } else {
+                }
+                if (accelerationX>2.0 || accelerationY>2.0){
                     alert.visibility = View.VISIBLE
                     alert.startAnimation(blinkAnimation)
                     normal.visibility = View.INVISIBLE
@@ -103,7 +106,11 @@ class NonDrivers : AppCompatActivity() {
     private fun getLocation() {
         firebaseRefLocation.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                locationAxix = snapshot.value.toString()
+
+                for (childSnapshot in snapshot.children) {
+                    locationAxix = childSnapshot.getValue(String::class.java).toString() // Get the value (latitude longitude)
+                }
+                Toast.makeText(this@NonDrivers,"$locationAxix",Toast.LENGTH_SHORT).show()
                 val numberStrings = locationAxix.split(" ") // Split by space
                 val numbers = numberStrings.map { it.toDouble() } // Convert to Int
 //                Toast.makeText(this@NonDrivers,"${numbers[0]}",Toast.LENGTH_SHORT).show()
