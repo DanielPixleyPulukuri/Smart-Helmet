@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         checkLocationPermission()
 
         binding.yes.setOnClickListener {
+
             intent = Intent(this, Driver::class.java)
             startActivity(intent)
         }
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     private fun checkLocationPermission() {
 
         if (ContextCompat.checkSelfPermission(

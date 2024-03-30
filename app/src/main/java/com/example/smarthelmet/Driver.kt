@@ -40,7 +40,6 @@ class Driver : AppCompatActivity() {
     private var latitude = 0.0
     private var longitude = 0.0
     private lateinit var deviceInfo: String
-
     private val domainLabels = arrayOf<Number>(93, 96, 97, 98, 99, 100, 101, 102, 103, 104)
     private var series1Number = arrayOf<Number>(95.0, 96.0, 101.0, 102.0, 97.0, 98.0, 99.0, 100.0, 101.0, 97.0)
     private lateinit var series1: XYSeries
@@ -73,6 +72,8 @@ class Driver : AppCompatActivity() {
     }
 
     private fun updateLocation() {
+        Toast.makeText(this@Driver,"update", Toast.LENGTH_SHORT).show()
+
         getLocation()
     }
 
@@ -86,19 +87,26 @@ class Driver : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        val fusedLocationClient: FusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(this)
+        // Your existing code to get location
+        val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 latitude = location.latitude
                 longitude = location.longitude
-//                Toast.makeText(this,"$latitude $longitude",Toast.LENGTH_SHORT).show()
-                firebaseRefLocation.child(deviceInfo).setValue("$latitude $longitude")
+
+                val l = "$latitude $longitude"
+                //firebaseRefLocation.removeValue()
+                // Use device's Android ID as the key
+                firebaseRefLocation.setValue("$deviceInfo + $l")
+                    .addOnCompleteListener {
+                        Toast.makeText(this@Driver, "Location updated", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this@Driver, "Failed to update location", Toast.LENGTH_SHORT).show()
+                    }
             }
         }
-
     }
-
     private fun accidentAlert() {
         val blinkAnimation = AnimationUtils.loadAnimation(this, R.anim.blink)
         firebaseRef.addValueEventListener(object : ValueEventListener {
@@ -146,6 +154,7 @@ class Driver : AppCompatActivity() {
                 pulseSensorValue?.let {
                     rearrange(series1Number)
                     series1Number[9] = it as Number
+                    series1Number[9] = (series1Number[9].toDouble() / 4.65454545455)
                     //Toast.makeText(this@Driver, "$it", Toast.LENGTH_SHORT).show()
                     plotGraph()
                 }
