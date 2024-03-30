@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_image_final"
+        android:src="@drawable/background_image_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="400dp"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,6 +31,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- Yes Button -->
+
+        <!-- No Button -->
         <Button
             android:id="@+id/yes"
             android:layout_width="0dp"
@@ -43,7 +45,6 @@
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
-        <!-- No Button -->
         <Button
             android:id="@+id/no"
             android:layout_width="0dp"

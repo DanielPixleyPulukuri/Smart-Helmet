@@ -5,43 +5,43 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.androidplot.xy.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import android.graphics.Color
-import android.location.Location
-import android.os.Build
-import android.view.View
-import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
-import java.util.Arrays
-import com.androidplot.xy.*
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import java.text.FieldPosition
 import java.text.Format
 import java.text.ParsePosition
+import java.util.Arrays
 
 class Driver : AppCompatActivity() {
 
     private lateinit var firebaseRef: DatabaseReference
     private lateinit var firebaseRefLocation: DatabaseReference
     private lateinit var plot: XYPlot
-    private lateinit var normal:Button
-    private lateinit var alert:Button
+    private lateinit var normal: Button
+    private lateinit var alert: Button
     private var latitude = 0.0
     private var longitude = 0.0
     private lateinit var deviceInfo: String
     private val domainLabels = arrayOf<Number>(93, 96, 97, 98, 99, 100, 101, 102, 103, 104)
-    private var series1Number = arrayOf<Number>(95.0, 96.0, 101.0, 102.0, 97.0, 98.0, 99.0, 100.0, 101.0, 97.0)
+    private var series1Number =
+        arrayOf<Number>(95.0, 96.0, 101.0, 102.0, 97.0, 98.0, 99.0, 100.0, 101.0, 97.0)
     private lateinit var series1: XYSeries
     private lateinit var series1Format: LineAndPointFormatter
 
@@ -59,27 +59,19 @@ class Driver : AppCompatActivity() {
         alert.visibility = View.INVISIBLE
         normal.visibility = View.INVISIBLE
 
-        object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
         checkLocationPermission()
-        updateLocation()
+        getLocation()
         setupPlot()
         getData()
         accidentAlert()
     }
 
-    private fun updateLocation() {
-        Toast.makeText(this@Driver,"update", Toast.LENGTH_SHORT).show()
-
-        getLocation()
-    }
-
-
     private fun checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             val intent = Intent(this, LocationPermission::class.java)
             startActivity(intent)
         }
@@ -87,39 +79,39 @@ class Driver : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        // Your existing code to get location
-        val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 latitude = location.latitude
                 longitude = location.longitude
-
-                val l = "$latitude $longitude"
-                //firebaseRefLocation.removeValue()
-                // Use device's Android ID as the key
-                firebaseRefLocation.setValue("$deviceInfo + $l")
+                val location = "$latitude $longitude"
+                firebaseRefLocation.setValue(location)
                     .addOnCompleteListener {
                         Toast.makeText(this@Driver, "Location updated", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
-                        Toast.makeText(this@Driver, "Failed to update location", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@Driver, "Failed to update location", Toast.LENGTH_SHORT)
+                            .show()
                     }
             }
         }
     }
+
     private fun accidentAlert() {
         val blinkAnimation = AnimationUtils.loadAnimation(this, R.anim.blink)
         firebaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val accelerationX = snapshot.child("acceleration_x").value?.toString()?.toDoubleOrNull() ?: 0.0
-                val accelerationY = snapshot.child("acceleration_y").value?.toString()?.toDoubleOrNull() ?: 0.0
-//                Toast.makeText(this@Driver,"XY",Toast.LENGTH_SHORT).show()
-                if (accelerationX<2.0 || accelerationY<2.0){
+                val accelerationX =
+                    snapshot.child("acceleration_x").value?.toString()?.toDoubleOrNull() ?: 0.0
+                val accelerationY =
+                    snapshot.child("acceleration_y").value?.toString()?.toDoubleOrNull() ?: 0.0
+                if (accelerationX < 2.0 || accelerationY < 2.0) {
                     alert.clearAnimation()
                     normal.visibility = View.VISIBLE
                     alert.visibility = View.INVISIBLE
                 }
-                if (accelerationX>2.0 || accelerationY>2.0){
+                if (accelerationX > 2.0 || accelerationY > 2.0) {
                     alert.visibility = View.VISIBLE
                     alert.startAnimation(blinkAnimation)
                     normal.visibility = View.INVISIBLE
@@ -131,22 +123,30 @@ class Driver : AppCompatActivity() {
             }
         })
     }
-    private fun setupPlot() {
-        series1 = SimpleXYSeries(Arrays.asList(*series1Number), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Pulse Value")
-        series1Format = LineAndPointFormatter(Color.GREEN, Color.WHITE, null, null)
 
+    private fun setupPlot() {
+        series1 = SimpleXYSeries(
+            Arrays.asList(*series1Number),
+            SimpleXYSeries.ArrayFormat.Y_VALS_ONLY,
+            "Pulse Value"
+        )
+        series1Format = LineAndPointFormatter(Color.GREEN, Color.WHITE, null, null)
         plot.addSeries(series1, series1Format)
         plot.graph.getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).format = object : Format() {
-            override fun format(obj: Any?, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer {
+            override fun format(
+                obj: Any?,
+                toAppendTo: StringBuffer,
+                pos: FieldPosition
+            ): StringBuffer {
                 val i = Math.round((obj as Number).toFloat())
                 return toAppendTo.append(domainLabels[i])
             }
-
             override fun parseObject(source: String?, pos: ParsePosition): Any? {
                 return null
             }
         }
     }
+
     private fun getData() {
         firebaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -155,29 +155,33 @@ class Driver : AppCompatActivity() {
                     rearrange(series1Number)
                     series1Number[9] = it as Number
                     series1Number[9] = (series1Number[9].toDouble() / 4.65454545455)
-                    //Toast.makeText(this@Driver, "$it", Toast.LENGTH_SHORT).show()
                     plotGraph()
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 Log.w(ContentValues.TAG, "Failed to read value.", error.toException())
             }
         })
     }
-
     private fun rearrange(a: Array<Number>) {
-        for (i in 0..a.size-2){
-            a[i] = a[i+1]
+        for (i in 0..a.size - 2) {
+            a[i] = a[i + 1]
         }
     }
-
     private fun plotGraph() {
-        series1 = SimpleXYSeries(Arrays.asList(*series1Number), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Pulse Value")
+        series1 = SimpleXYSeries(
+            Arrays.asList(*series1Number),
+            SimpleXYSeries.ArrayFormat.Y_VALS_ONLY,
+            "Pulse Value"
+        )
         plot.clear()
         plot.addSeries(series1, series1Format)
         plot.graph.getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).format = object : Format() {
-            override fun format(obj: Any?, toAppendTo: StringBuffer, pos: FieldPosition): StringBuffer {
+            override fun format(
+                obj: Any?,
+                toAppendTo: StringBuffer,
+                pos: FieldPosition
+            ): StringBuffer {
                 val i = Math.round((obj as Number).toFloat())
                 return toAppendTo.append(domainLabels[i])
             }
